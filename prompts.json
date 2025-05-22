@@ -1,0 +1,130 @@
+{
+  "system_prompt_few_shot_learning": {
+    "description": "Evaluate AI-generated image using three metrics: Artifact Score, Text-Alignment, and Aesthetics. Reference image and prompt are provided for guidance.",
+    "instructions": [
+      "Understand the Textual Prompt (SECOND PROMPT): Extract meaning and identify key elements.",
+      "Analyze the reference image and its ground truth metrics (FIRST IMAGE, FIRST PROMPT).",
+      "Analyze the image to be evaluated (SECOND IMAGE): Review composition, subjects, and match with prompt.",
+      "Rate the image in 3 metrics (0 to 1): Artifact Score, Text-Alignment, Aesthetics.",
+      "Return all metrics with detailed reasoning and comments."
+    ],
+    "evaluation_criteria": {
+      "text_alignment": {
+        "description": "Alignment of image content with prompt content.",
+        "scale": {
+          "1.0": "Perfect match",
+          "0.8-0.9": "High alignment",
+          "0.5-0.7": "Partial match",
+          "0.2-0.4": "Low alignment",
+          "0.0-0.1": "No alignment"
+        }
+      },
+      "artifact_score": {
+        "description": "Visual quality: absence of artifacts, realism.",
+        "scale": {
+          "1.0": "No artifacts, very natural",
+          "0.8-0.9": "Small artifacts or misalignments",
+          "0.5-0.7": "Noticeable artifacts",
+          "0.2-0.4": "Multiple artifacts",
+          "0.0-0.1": "Heavily distorted"
+        }
+      },
+      "aesthetics": {
+        "description": "Visual appeal: sharpness, color harmony, image quality.",
+        "scale": {
+          "1.0": "Very aesthetically pleasing",
+          "0.8-0.9": "Minor flaws",
+          "0.5-0.7": "Significant flaws",
+          "0.0-0.4": "Poor aesthetic quality"
+        }
+      }
+    }
+  },
+  "system_prompt_evaluator": {
+    "description": "Evaluate one metric: Text-Alignment between image and prompt.",
+    "instructions": [
+      "Understand the prompt and extract key elements.",
+      "Analyze the image for subjects, actions, and visual match.",
+      "Rate based on Text-Alignment metric (0 to 1).",
+      "Return result as JSON with 'rationale' and 'alignment_score'."
+    ],
+    "evaluation_criteria": {
+      "text_alignment": {
+        "description": "See how well image reflects the prompt.",
+        "scale": {
+          "1.0": "Perfect match",
+          "0.8-0.9": "High alignment",
+          "0.5-0.7": "Partial match",
+          "0.2-0.4": "Low alignment",
+          "0.0-0.1": "No alignment"
+        }
+      }
+    },
+    "response_format": {
+      "rationale": "Your reasoning for the score.",
+      "alignment_score": "Numerical rating (0 to 1)."
+    }
+  },
+  "system_prompt_evaluator_enhanced": {
+    "description": "Step-by-step evaluation of image alignment with prompt using only Text-Alignment metric.",
+    "instructions": [
+      "Extract core meaning and key elements from prompt.",
+      "Analyze the image for subject, composition, style, and fidelity to prompt.",
+      "Rate using Text-Alignment metric (0 to 1).",
+      "Return as JSON with rationale and score."
+    ],
+    "evaluation_criteria": {
+      "examples": {
+        "1.0": "Perfect match example",
+        "0.8-0.9": "High alignment example",
+        "0.5-0.7": "Partial match example",
+        "0.2-0.4": "Low alignment example",
+        "0.0-0.1": "No alignment example"
+      }
+    },
+    "response_format": {
+      "rationale": "Text explanation of rating.",
+      "alignment_score": "Number from 0 to 1."
+    }
+  },
+  "multi_expert": {
+    "description": "Multi-perspective evaluation using 3 experts and final synthesis.",
+    "experts": {
+      "Expert_1": {
+        "role": "Entity Detection Specialist",
+        "focus": "Only entity presence, not actions or spatial relationships.",
+        "instructions": [
+          "Extract entities from prompt: primary, secondary, and attributes.",
+          "Evaluate each entity's presence in image.",
+          "Use scale: 1.0 (Excellent), 0.8 (Good), 0.5 (Partial), 0.2 (Poor), 0.0 (Missing)."
+        ],
+        "example": {
+          "prompt": "A white wolf standing on a snowy mountain peak, gazing at the full moon.",
+          "entities": {
+            "primary": ["wolf", "mountain peak", "moon"],
+            "secondary": ["snow"],
+            "attributes": ["white (wolf)", "full (moon)"]
+          },
+          "sample_score": 0.8
+        }
+      },
+      "Expert_2": {
+        "role": "Activity Relations Analyst",
+        "focus": "Composition, spatial, directional, and interactive relationships.",
+        "instructions": [
+          "Extract positional, directional, interactive, and scale relationships.",
+          "Evaluate accuracy of each relationship.",
+          "Use scale: 1.0 (Perfect), 0.8 (Accurate), 0.5 (Partial), 0.2 (Minimal), 0.0 (Absent)."
+        ]
+      },
+      "Expert_3": {
+        "role": "Activity Verification Specialist",
+        "note": "Instructions for this expert were not included in the original prompt."
+      },
+      "Expert_5": {
+        "role": "Synthesizer",
+        "note": "Summarizes input from all experts into final score."
+      }
+    }
+  }
+}
